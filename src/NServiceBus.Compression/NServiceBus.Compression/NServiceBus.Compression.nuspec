@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>NServiceBus.Compression</id>
+    <title>Compression extension for NServiceBus</title>
+    <version>$version$</version>
+    <authors>Ramon Smits</authors>
+    <owners>ramonsmits</owners>
+    <licenseUrl>https://github.com/ramonsmits/NServiceBus.Compression/tree/$version$/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/ramonsmits/NServiceBus.Compression/</projectUrl>
+    <iconUrl>http://s3.amazonaws.com/nuget.images/NServiceBus_32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <tags>nservicebus </tags>
+    <dependencies>
+      <!-- Reverse independency 
+      <dependency id="NServiceBus" version="[5,6)" />
+      -->
+    </dependencies>
+  </metadata>
+</package>
