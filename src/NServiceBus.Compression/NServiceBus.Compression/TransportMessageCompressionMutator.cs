@@ -10,6 +10,7 @@ using NServiceBus.Unicast.Messages;
 
 public class CompressionFeature : Feature
 {
+    static readonly ILog Log = LogManager.GetLogger("Compression");
     public CompressionFeature()
     {
         EnableByDefault();
@@ -17,13 +18,18 @@ public class CompressionFeature : Feature
 
     protected override void Setup(FeatureConfigurationContext context)
     {
-        var mutator = new TransportMessageCompressionMutator(CompressionLevel.Fastest, 1000);
+        var level = CompressionLevel.Fastest;
+        var thresshold = 1000;
+
+        Log.InfoFormat("CompressionLevel: {0}", level);
+        Log.InfoFormat("Thresshold: {0:N0} bytes", thresshold);
+
+        var mutator = new TransportMessageCompressionMutator(level, thresshold);
         context.Container.RegisterSingleton(mutator);
     }
 
     class TransportMessageCompressionMutator : IMutateTransportMessages
     {
-        static readonly ILog Log = LogManager.GetLogger("TransportMessageCompressionMutator");
         static readonly bool IsDebugEnabled = Log.IsDebugEnabled;
         const string HeaderKey = "Content-Encoding";
         const string HeaderValue = "gzip";
@@ -40,7 +46,11 @@ public class CompressionFeature : Feature
         {
             var exceedsCompressionThresshold = transportMessage.Body.Length > CompressThresshold;
 
-            if (!exceedsCompressionThresshold) return;
+            if (!exceedsCompressionThresshold)
+            {
+                Log.Debug("Not exceeding compression thresshold.");
+                return;
+            }
 
             var uncompressedBodyStream = new MemoryStream(transportMessage.Body, false);
             var compressedBodyStream = new MemoryStream();
