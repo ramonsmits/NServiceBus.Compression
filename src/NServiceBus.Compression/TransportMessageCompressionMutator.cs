@@ -7,7 +7,6 @@ using NServiceBus.Logging;
 using NServiceBus.MessageMutator;
 using NServiceBus.Unicast.Messages;
 
-
 class CompressionFeature : Feature
 {
     static readonly ILog Log = LogManager.GetLogger("NServiceBus.Compression");
@@ -17,15 +16,25 @@ class CompressionFeature : Feature
         EnableByDefault();
     }
 
+    // This is requires to workaround a limitation in version 5 which is not able to register mutators from features.
+    class RegisterMutator : INeedInitialization
+    {
+        public void Customize(BusConfiguration busConfiguration)
+        {
+            busConfiguration.RegisterComponents(
+                registration: components =>
+                {
+                    components.ConfigureComponent<TransportMessageCompressionMutator>(DependencyLifecycle.SingleInstance);
+                });
+        }
+    }
+
     protected override void Setup(FeatureConfigurationContext context)
     {
-        context.Settings.TryGet(out Properties properties); // If failed, we have the defaults 
-
+        if (!context.Settings.TryGet(out Properties properties)) properties = new Properties();
         Log.InfoFormat("Compression level: {0}", properties.CompressionLevel);
         Log.InfoFormat("Threshold: {0:N0} bytes", properties.ThresholdSize);
-
-        var mutator = new TransportMessageCompressionMutator(properties.CompressionLevel, properties.ThresholdSize);
-        context.Container.RegisterSingleton(mutator);
+        context.Container.RegisterSingleton(properties);
     }
 
     class TransportMessageCompressionMutator : IMutateTransportMessages
@@ -36,10 +45,10 @@ class CompressionFeature : Feature
         readonly int CompressThresshold;
         readonly CompressionLevel CompressionLevel;
 
-        public TransportMessageCompressionMutator(CompressionLevel compressionLevel, int compressThresshold)
+        public TransportMessageCompressionMutator(Properties properties)
         {
-            CompressionLevel = compressionLevel;
-            CompressThresshold = compressThresshold;
+            CompressionLevel = properties.CompressionLevel;
+            CompressThresshold = properties.ThresholdSize;
         }
 
         public void MutateOutgoing(LogicalMessage message, TransportMessage transportMessage)
