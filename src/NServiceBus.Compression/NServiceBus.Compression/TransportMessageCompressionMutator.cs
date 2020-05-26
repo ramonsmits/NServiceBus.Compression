@@ -8,9 +8,10 @@ using NServiceBus.MessageMutator;
 using NServiceBus.Unicast.Messages;
 
 
-public class CompressionFeature : Feature
+class CompressionFeature : Feature
 {
-    static readonly ILog Log = LogManager.GetLogger("Compression");
+    static readonly ILog Log = LogManager.GetLogger("NServiceBus.Compression");
+
     public CompressionFeature()
     {
         EnableByDefault();
@@ -19,12 +20,12 @@ public class CompressionFeature : Feature
     protected override void Setup(FeatureConfigurationContext context)
     {
         var level = CompressionLevel.Fastest;
-        var thresshold = 1000;
+        var threshold = 1000;
 
-        Log.InfoFormat("CompressionLevel: {0}", level);
-        Log.InfoFormat("Thresshold: {0:N0} bytes", thresshold);
+        Log.InfoFormat("Compression level: {0}", level);
+        Log.InfoFormat("Threshold: {0:N0} bytes", threshold);
 
-        var mutator = new TransportMessageCompressionMutator(level, thresshold);
+        var mutator = new TransportMessageCompressionMutator(level, threshold);
         context.Container.RegisterSingleton(mutator);
     }
 
@@ -36,7 +37,7 @@ public class CompressionFeature : Feature
         readonly int CompressThresshold;
         readonly CompressionLevel CompressionLevel;
 
-        internal TransportMessageCompressionMutator(CompressionLevel compressionLevel, int compressThresshold)
+        public TransportMessageCompressionMutator(CompressionLevel compressionLevel, int compressThresshold)
         {
             CompressionLevel = compressionLevel;
             CompressThresshold = compressThresshold;
@@ -48,7 +49,7 @@ public class CompressionFeature : Feature
 
             if (!exceedsCompressionThresshold)
             {
-                Log.Debug("Not exceeding compression thresshold.");
+                if (IsDebugEnabled) Log.Debug("Skip compression, not exceeding compression thresshold.");
                 return;
             }
 
@@ -76,17 +77,18 @@ public class CompressionFeature : Feature
 
         public void MutateIncoming(TransportMessage transportMessage)
         {
-            if (!transportMessage.Headers.ContainsKey(HeaderKey)) return;
-            var value = transportMessage.Headers[HeaderKey];
-            if (value != HeaderValue) throw new NotSupportedException($"Unsupported compression method: {value}");
-
-            var compressedBodyStream = new MemoryStream(transportMessage.Body, false);
-            using (var bigStream = new GZipStream(compressedBodyStream, CompressionMode.Decompress))
+            if (transportMessage.Headers.TryGetValue(HeaderKey, out var value))
             {
-                var uncompressedBodyStream = new MemoryStream();
-                bigStream.CopyTo(uncompressedBodyStream);
-                transportMessage.Body = uncompressedBodyStream.ToArray();
+                if (value != HeaderValue) throw new NotSupportedException($"Unsupported compression method: {value}");
+                var compressedBodyStream = new MemoryStream(transportMessage.Body, false);
+                using (var bigStream = new GZipStream(compressedBodyStream, CompressionMode.Decompress))
+                {
+                    var uncompressedBodyStream = new MemoryStream();
+                    bigStream.CopyTo(uncompressedBodyStream);
+                    transportMessage.Body = uncompressedBodyStream.ToArray();
+                }
             }
         }
     }
 }
+
