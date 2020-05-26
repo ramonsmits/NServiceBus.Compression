@@ -2,7 +2,7 @@
 {
     using System;
     using System.IO.Compression;
-    using NServiceBus.Configuration.AdvanceExtensibility;
+    using NServiceBus.Configuration.AdvancedExtensibility;
 
     public static partial class ConfigureExtensions
     {
