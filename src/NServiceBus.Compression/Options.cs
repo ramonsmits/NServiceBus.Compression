@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 
-class Properties
+class Options
 {
     public CompressionLevel CompressionLevel = CompressionLevel.Fastest;
     public int ThresholdSize = 1000;

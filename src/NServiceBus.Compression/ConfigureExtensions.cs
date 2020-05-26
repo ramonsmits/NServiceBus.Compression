@@ -10,7 +10,7 @@
         /// Enable compression of message bodies
         /// </summary>
         public static void CompressMessageBody(
-            this BusConfiguration config,
+            this EndpointConfiguration config,
             CompressionLevel compressionLevel,
             int thresholdSize
             )
@@ -18,13 +18,13 @@
             if (config == null) throw new ArgumentNullException(nameof(config));
             if (thresholdSize <= 0) throw new ArgumentOutOfRangeException(nameof(thresholdSize), thresholdSize, "Threshold size must be greater than 0.");
 
-            var properties = new global::Properties
+            var properties = new Options
             {
                 CompressionLevel = compressionLevel,
                 ThresholdSize = thresholdSize
             };
             var settings = config.GetSettings();
-            settings.Set<global::Properties>(properties);
+            settings.Set<Options>(properties);
         }
     }
 }

@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <!-- AssemblyFileVersionAttribute -->
-    <FileVersion>1.0.0</FileVersion>
+    <FileVersion>2.0.0</FileVersion>
     <!-- AssemblyInformationalVersionAttribute -->
     <Version>$(FileVersion)</Version>
     <!-- AssemblyVersionAttribute -->
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <!-- Nuget -->
     <PackageVersion>$(Version)</PackageVersion>
     <TargetFrameworks>net452</TargetFrameworks>
     <PackageId>NServiceBus.Compression</PackageId>
     <Company>https://github.com/ramonsmits</Company>
     <Authors>ramonsmits</Authors>
-    <Description>Targets NServiceBus 5.0, compresses messages body data.</Description>
+    <Description>Targets NServiceBus 6.x, compresses messages body data.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/ramonsmits/NServiceBus.Compression/tree/$(PackageVersion)</PackageProjectUrl>
@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus" Version="[5,6)" />
+    <PackageReference Include="NServiceBus" Version="[6.1.3,7)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
@@ -44,10 +44,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
