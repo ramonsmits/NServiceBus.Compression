@@ -58,7 +58,7 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
     {
         if (context.Headers.TryGetValue(HeaderKey, out var value))
         {
-            if (value != HeaderValue) throw new NotSupportedException($"Unsupported compression method: {value}");
+            if (value != HeaderValue) return TaskEx.CompletedTask;;
             var compressedBodyStream = new MemoryStream(context.Body, false);
             using var bigStream = new GZipStream(compressedBodyStream, CompressionMode.Decompress);
             var uncompressedBodyStream = new MemoryStream();
