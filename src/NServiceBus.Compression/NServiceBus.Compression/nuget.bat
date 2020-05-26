@@ -1,1 +1,0 @@
-c:\tools\nuget.exe pack NServiceBus.Compression.csproj -Prop Configuration=Release
