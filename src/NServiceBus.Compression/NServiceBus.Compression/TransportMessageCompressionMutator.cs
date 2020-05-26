@@ -19,13 +19,12 @@ class CompressionFeature : Feature
 
     protected override void Setup(FeatureConfigurationContext context)
     {
-        var level = CompressionLevel.Fastest;
-        var threshold = 1000;
+        context.Settings.TryGet(out Properties properties); // If failed, we have the defaults 
 
-        Log.InfoFormat("Compression level: {0}", level);
-        Log.InfoFormat("Threshold: {0:N0} bytes", threshold);
+        Log.InfoFormat("Compression level: {0}", properties.CompressionLevel);
+        Log.InfoFormat("Threshold: {0:N0} bytes", properties.ThresholdSize);
 
-        var mutator = new TransportMessageCompressionMutator(level, threshold);
+        var mutator = new TransportMessageCompressionMutator(properties.CompressionLevel, properties.ThresholdSize);
         context.Container.RegisterSingleton(mutator);
     }
 
@@ -91,4 +90,3 @@ class CompressionFeature : Feature
         }
     }
 }
-
