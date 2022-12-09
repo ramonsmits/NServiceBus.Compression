@@ -2,6 +2,8 @@
 {
     using NServiceBus.Features;
     using NServiceBus.Logging;
+    using NServiceBus.MessageMutator;
+    using Microsoft.Extensions.DependencyInjection;
 
     class CompressionFeature : Feature
     {
@@ -17,8 +19,11 @@
             if (!context.Settings.TryGet(out Options properties)) properties = new Options();
             Log.InfoFormat("Compression level: {0}", properties.CompressionLevel);
             Log.InfoFormat("Threshold: {0:N0} bytes", properties.ThresholdSize);
-            context.Container.RegisterSingleton(properties);
-            context.Container.ConfigureComponent<TransportMessageCompressionMutator>(DependencyLifecycle.SingleInstance);
+            context.Services.AddSingleton(properties);
+
+            context.Services.AddSingleton<TransportMessageCompressionMutator>();
+            context.Services.AddSingleton<IMutateIncomingTransportMessages>(b => b.GetRequiredService<TransportMessageCompressionMutator>());
+            context.Services.AddSingleton<IMutateOutgoingTransportMessages>(b => b.GetRequiredService<TransportMessageCompressionMutator>());
         }
     }
 }

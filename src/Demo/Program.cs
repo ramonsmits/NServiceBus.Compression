@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NServiceBus;
-using NServiceBus.Config;
-using NServiceBus.Config.ConfigurationSource;
-using NServiceBus.Logging;
 
 class Program
 {
@@ -24,7 +21,7 @@ class Program
         // mutators from features.
 
         endpointConfiguration.CompressMessageBody(System.IO.Compression.CompressionLevel.Optimal, 1000);
-        
+
         // Uncomment to disable compression
 
         // var excludesBuilder = AllAssemblies.Except("NServiceBus.Compression.dll");
@@ -39,6 +36,7 @@ class Program
 
         await endpointInstance.SendLocal(myMessage);
 
+        Console.WriteLine("Press ANY key to exit...");
         Console.ReadKey();
     }
 }
@@ -52,7 +50,6 @@ class Handler : IHandleMessages<Message>
 {
     public Task Handle(Message message, IMessageHandlerContext context)
     {
-        Console.WriteLine("Data size: {0:N0} bytes", message.Data.Length);
-        return Task.FromResult(0);
+        return Console.Out.WriteLineAsync($"Data size: {message.Data.Length:N0} bytes");
     }
 }

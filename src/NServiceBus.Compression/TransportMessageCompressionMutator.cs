@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Logging;
 using NServiceBus.MessageMutator;
+using CommunityToolkit.HighPerformance;
 
 class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMutateOutgoingTransportMessages
 {
@@ -31,7 +32,7 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
             return TaskEx.CompletedTask;
         }
 
-        var uncompressedBodyStream = new MemoryStream(context.OutgoingBody, false);
+        using var uncompressedBodyStream = ReadOnlyMemoryExtensions.AsStream(context.OutgoingBody);
         var compressedBodyStream = new MemoryStream();
 
         using (var compressionStream = new GZipStream(compressedBodyStream, CompressionLevel))
@@ -58,8 +59,8 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
     {
         if (context.Headers.TryGetValue(HeaderKey, out var value))
         {
-            if (value != HeaderValue) return TaskEx.CompletedTask;;
-            var compressedBodyStream = new MemoryStream(context.Body, false);
+            if (value != HeaderValue) return TaskEx.CompletedTask;
+            using var compressedBodyStream = ReadOnlyMemoryExtensions.AsStream(context.Body);
             using var bigStream = new GZipStream(compressedBodyStream, CompressionMode.Decompress);
             var uncompressedBodyStream = new MemoryStream();
             bigStream.CopyTo(uncompressedBodyStream);
