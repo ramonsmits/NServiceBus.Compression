@@ -1,6 +1,30 @@
 # NServiceBus.Compression
 
-Adds message body compression to the NSericeBus pipeline.
+Adds message body compression to the NServiceBus pipeline.
+
+## When to use
+
+Compressing message bodies can be useful when the message body exceeds the transports its maximum message size or just in general to reduce network IO.
+
+| Transport                  | Maximum size |
+| -------------------------- | ------------:|
+| MSMQ                       | 4MB          |
+| Azure Service Bus Standard | 256KB        |
+| Azure Service Bus Premium  | 100MB        |
+| RabbitMQ                   | No limit     |
+
+Note: In the past the maximum message size for Azure Service Bus was much smaller.
+
+## Alternatives
+
+Compression only works well on text-based payloads like XML and Json any payload (text or binary) that contains repetitive data.
+
+1. Use a binary serializer
+   - In the past some ready to use packages were available via https://github.com/NServiceBusExtensions but none of the binary serializers are available for NServiceBus 8+.
+   - [ramonsmits/NServiceBus.ProtoBufNet](https://github.com/ramonsmits/NServiceBus.ProtoBufNet) (original archived at [NServiceBusExtensions/NServiceBus.ProtoBufNet](https://github.com/NServiceBusExtensions/NServiceBus.ProtoBufNet)
+   - Implementation a binary serializer is simple and just requires a few lines of code
+3. Use the claim check pattern for binary message attachments via https://github.com/NServiceBusExtensions/NServiceBus.Attachments
+4. Use any of the above in combination with compression
 
 ## Version compatibility
 
