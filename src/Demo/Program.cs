@@ -9,6 +9,7 @@ class Program
         //LogManager.Use<DefaultFactory>().Level(LogLevel.Debug);
 
         var endpointConfiguration = new EndpointConfiguration("compression");
+        endpointConfiguration.UseSerialization(new SystemJsonSerializer());
         endpointConfiguration.UsePersistence<LearningPersistence>();
         endpointConfiguration.UseTransport<LearningTransport>();
         endpointConfiguration.AuditProcessedMessagesTo("audit");
