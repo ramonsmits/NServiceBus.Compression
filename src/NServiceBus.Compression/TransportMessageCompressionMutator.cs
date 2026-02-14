@@ -1,34 +1,25 @@
-﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using CommunityToolkit.HighPerformance;
 using NServiceBus;
 using NServiceBus.Logging;
 using NServiceBus.MessageMutator;
-using CommunityToolkit.HighPerformance;
 
-class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMutateOutgoingTransportMessages
+class TransportMessageCompressionMutator(Options properties) : IMutateIncomingTransportMessages, IMutateOutgoingTransportMessages
 {
     static readonly ILog Log = CompressionFeature.Log;
     static readonly bool IsDebugEnabled = Log.IsDebugEnabled;
     const string HeaderKey = "Content-Encoding";
     const string HeaderValue = "gzip";
-    readonly int CompressThresshold;
-    readonly CompressionLevel CompressionLevel;
-
-    public TransportMessageCompressionMutator(Options properties)
-    {
-        CompressionLevel = properties.CompressionLevel;
-        CompressThresshold = properties.ThresholdSize;
-    }
+    readonly int CompressThreshold = properties.ThresholdSize;
+    readonly CompressionLevel CompressionLevel = properties.CompressionLevel;
 
     public Task MutateOutgoing(MutateOutgoingTransportMessageContext context)
     {
-        var exceedsCompressionThresshold = context.OutgoingBody.Length > CompressThresshold;
-
-        if (!exceedsCompressionThresshold)
+        if (context.OutgoingBody.Length <= CompressThreshold)
         {
-            if (IsDebugEnabled) Log.Debug("Skip compression, not exceeding compression thresshold.");
+            if (IsDebugEnabled) Log.Debug("Skip compression, not exceeding compression threshold.");
             return Task.CompletedTask;
         }
 
@@ -46,7 +37,7 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
 
         if (compressedBody.Length > context.OutgoingBody.Length)
         {
-            Log.InfoFormat("Compression didn't save any bytes, ignoring. Consider raising the current compression thresshold of {0:N0} bytes.", CompressThresshold);
+            Log.InfoFormat("Compression didn't save any bytes, ignoring. Consider raising the current compression threshold of {0:N0} bytes.", CompressThreshold);
             return Task.CompletedTask;
         }
 

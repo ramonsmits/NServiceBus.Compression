@@ -1,31 +1,28 @@
-﻿namespace NServiceBus
+using System;
+using System.IO.Compression;
+using NServiceBus.Configuration.AdvancedExtensibility;
+
+namespace NServiceBus;
+
+public static class ConfigureExtensions
 {
-    using System;
-    using System.IO.Compression;
-    using NServiceBus.Configuration.AdvancedExtensibility;
-
-    public static partial class ConfigureExtensions
+    /// <summary>
+    /// Enable compression of message bodies
+    /// </summary>
+    public static void CompressMessageBody(
+        this EndpointConfiguration config,
+        CompressionLevel compressionLevel,
+        int thresholdSize)
     {
-        /// <summary>
-        /// Enable compression of message bodies
-        /// </summary>
-        public static void CompressMessageBody(
-            this EndpointConfiguration config,
-            CompressionLevel compressionLevel,
-            int thresholdSize
-            )
-        {
-            if (config == null) throw new ArgumentNullException(nameof(config));
-            if (thresholdSize <= 0) throw new ArgumentOutOfRangeException(nameof(thresholdSize), thresholdSize, "Threshold size must be greater than 0.");
+        ArgumentNullException.ThrowIfNull(config);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(thresholdSize);
 
-            var properties = new Options
-            {
-                CompressionLevel = compressionLevel,
-                ThresholdSize = thresholdSize
-            };
-            var settings = config.GetSettings();
-            settings.Set<Options>(properties);
-            config.EnableFeature<CompressionFeature>();
-        }
+        var properties = new Options
+        {
+            CompressionLevel = compressionLevel,
+            ThresholdSize = thresholdSize
+        };
+        config.GetSettings().Set(properties);
+        config.EnableFeature<CompressionFeature>();
     }
 }
