@@ -14,13 +14,10 @@
     <Company>https://github.com/ramonsmits</Company>
     <Authors>ramonsmits</Authors>
     <Description>Targets NServiceBus 10.x, compresses messages body data.</Description>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes></PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/ramonsmits/NServiceBus.Compression/tree/$(PackageVersion)</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <IncludeSource>True</IncludeSource>
     <RepositoryUrl>https://github.com/ramonsmits/NServiceBus.Compression</RepositoryUrl>
     <Copyright>Copyright 2020, 2021, 2022, 2023, 2024, 2025, 2026 (c) Ramon Smits</Copyright>
     <PackageTags>nservicebus nservicebus10 pipeline mutator community</PackageTags>
@@ -29,7 +26,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -41,7 +38,6 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
     <PackageReference Include="NServiceBus" Version="[10.0.0,11.0.0)" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
