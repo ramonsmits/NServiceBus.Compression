@@ -5,3 +5,4 @@ packages
 *.nupkg
 *.suo
 .learningtransport
+artifacts/
