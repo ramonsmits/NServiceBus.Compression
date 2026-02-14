@@ -25,6 +25,7 @@
             };
             var settings = config.GetSettings();
             settings.Set<Options>(properties);
+            config.EnableFeature<CompressionFeature>();
         }
     }
 }

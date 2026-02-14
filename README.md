@@ -35,6 +35,7 @@ Compression only works well on text-based payloads like XML and Json any payload
 | v7.x        | v3.x                    |
 | v8.x        | v4.x                    |
 | v9.x        | v5.x                    |
+| v10.x       | v6.x                    |
 
 Please note that there might be versions targeting other NServiceBus versions. [Please check the Releases for all versions.](https://github.com/ramonsmits/nservicebus.compression/releases) or [check the root of the  `master` branch of the repository](https://github.com/ramonsmits/nservicebus.compression).
 

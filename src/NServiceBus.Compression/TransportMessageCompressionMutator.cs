@@ -29,7 +29,7 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
         if (!exceedsCompressionThresshold)
         {
             if (IsDebugEnabled) Log.Debug("Skip compression, not exceeding compression thresshold.");
-            return TaskEx.CompletedTask;
+            return Task.CompletedTask;
         }
 
         using var uncompressedBodyStream = ReadOnlyMemoryExtensions.AsStream(context.OutgoingBody);
@@ -47,25 +47,25 @@ class TransportMessageCompressionMutator : IMutateIncomingTransportMessages, IMu
         if (compressedBody.Length > context.OutgoingBody.Length)
         {
             Log.InfoFormat("Compression didn't save any bytes, ignoring. Consider raising the current compression thresshold of {0:N0} bytes.", CompressThresshold);
-            return TaskEx.CompletedTask;
+            return Task.CompletedTask;
         }
 
         context.OutgoingBody = compressedBody;
         context.OutgoingHeaders[HeaderKey] = HeaderValue;
-        return TaskEx.CompletedTask;
+        return Task.CompletedTask;
     }
 
     public Task MutateIncoming(MutateIncomingTransportMessageContext context)
     {
         if (context.Headers.TryGetValue(HeaderKey, out var value))
         {
-            if (value != HeaderValue) return TaskEx.CompletedTask;
+            if (value != HeaderValue) return Task.CompletedTask;
             using var compressedBodyStream = ReadOnlyMemoryExtensions.AsStream(context.Body);
             using var bigStream = new GZipStream(compressedBodyStream, CompressionMode.Decompress);
             var uncompressedBodyStream = new MemoryStream();
             bigStream.CopyTo(uncompressedBodyStream);
             context.Body = uncompressedBodyStream.ToArray();
         }
-        return TaskEx.CompletedTask;
+        return Task.CompletedTask;
     }
 }

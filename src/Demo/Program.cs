@@ -11,22 +11,11 @@ class Program
         var endpointConfiguration = new EndpointConfiguration("compression");
         endpointConfiguration.UseSerialization(new SystemJsonSerializer());
         endpointConfiguration.UsePersistence<LearningPersistence>();
-        endpointConfiguration.UseTransport<LearningTransport>();
+        endpointConfiguration.UseTransport(new LearningTransport());
         endpointConfiguration.AuditProcessedMessagesTo("audit");
         endpointConfiguration.EnableInstallers();
 
-        // Commenting the following will NOT disable, feature is enabled by
-        // default. Can only be disabled by excluding the assembly from scanning.
-        // This is because the feature relies on `INeedInitialization` to
-        // workaround a limitation in version 5 which is not able to register
-        // mutators from features.
-
         endpointConfiguration.CompressMessageBody(System.IO.Compression.CompressionLevel.Optimal, 1000);
-
-        // Uncomment to disable compression
-
-        // var excludesBuilder = AllAssemblies.Except("NServiceBus.Compression.dll");
-        // busConfiguration.AssembliesToScan(excludesBuilder);
 
         var endpointInstance = await Endpoint.Start(endpointConfiguration);
 

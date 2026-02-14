@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <!-- AssemblyFileVersionAttribute -->
-    <FileVersion>5.0.1</FileVersion>
+    <FileVersion>6.0.0</FileVersion>
     <!-- AssemblyInformationalVersionAttribute -->
     <Version>$(FileVersion)</Version>
     <!-- AssemblyVersionAttribute -->
-    <AssemblyVersion>5.0.1.0</AssemblyVersion>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <!-- Nuget -->
     <PackageVersion>$(Version)</PackageVersion>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <PackageId>NServiceBus.Compression</PackageId>
     <Company>https://github.com/ramonsmits</Company>
     <Authors>ramonsmits</Authors>
-    <Description>Targets NServiceBus 9.x, compresses messages body data.</Description>
+    <Description>Targets NServiceBus 10.x, compresses messages body data.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/ramonsmits/NServiceBus.Compression/tree/$(PackageVersion)</PackageProjectUrl>
@@ -22,8 +22,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSource>True</IncludeSource>
     <RepositoryUrl>https://github.com/ramonsmits/NServiceBus.Compression</RepositoryUrl>
-    <Copyright>Copyright 2020, 2021, 2022, 2023, 2024 (c) Ramon Smits</Copyright>
-    <PackageTags>nservicebus nservicebus8 pipeline mutator community</PackageTags>
+    <Copyright>Copyright 2020, 2021, 2022, 2023, 2024, 2025, 2026 (c) Ramon Smits</Copyright>
+    <PackageTags>nservicebus nservicebus10 pipeline mutator community</PackageTags>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -40,8 +40,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
-    <PackageReference Include="NServiceBus" Version="[9.0.0,10.0.0)" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="NServiceBus" Version="[10.0.0,11.0.0)" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

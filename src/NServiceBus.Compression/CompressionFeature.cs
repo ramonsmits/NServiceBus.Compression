@@ -9,11 +9,6 @@
     {
         internal static readonly ILog Log = LogManager.GetLogger("NServiceBus.Compression");
 
-        public CompressionFeature()
-        {
-            EnableByDefault();
-        }
-
         protected override void Setup(FeatureConfigurationContext context)
         {
             if (!context.Settings.TryGet(out Options properties)) properties = new Options();
