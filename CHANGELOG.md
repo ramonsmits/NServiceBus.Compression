@@ -1,0 +1,69 @@
+# Changelog
+
+## [Unreleased]
+
+Target: NServiceBus 10.x | .NET 10.0
+
+- Support NServiceBus 10.x
+- Target net10.0
+- Remove `EnableByDefault()`, require explicit `EnableFeature` via configuration API
+- Code cleanup: file-scoped namespaces, primary constructors, modern argument validation
+- Remove redundant `Microsoft.SourceLink.GitHub` (built into .NET 8+ SDK)
+- Switch to MinVer for tag-based versioning
+- Add justfile for build, pack, and publish workflows
+- Add GitHub Actions CI workflow
+
+### Dependencies
+
+- NServiceBus [10.0.0, 11.0.0)
+- CommunityToolkit.HighPerformance 8.4.0
+- MinVer 7.0.0
+
+## [5.0.1] - 2024-06-14
+
+- Fix NServiceBus 9.x package reference (was still targeting 8.x)
+
+## [5.0.0] - 2024-06-14
+
+Target: NServiceBus 9.x | .NET 8.0
+
+- Support NServiceBus 9.x
+- Add README to NuGet package
+- Enable dependabot
+
+### Dependencies
+
+- CommunityToolkit.HighPerformance 8.2.1
+- Microsoft.SourceLink.GitHub 1.1.1
+
+## [4.0.0] - 2022-12-09
+
+Target: NServiceBus 8.x
+
+- Support NServiceBus 8.x
+
+## [3.0.0] - 2020-05-27
+
+Target: NServiceBus 7.x
+
+- Support NServiceBus 7.x
+
+## [2.0.0] - 2020-05-27
+
+Target: NServiceBus 6.x
+
+- Support NServiceBus 6.x
+
+## [1.0.0] - 2020-05-26
+
+Target: NServiceBus 5.x
+
+- Initial release
+
+[Unreleased]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...HEAD
+[5.0.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.0...5.0.1
+[5.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/4.0.0...5.0.0
+[4.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/3.0.0...4.0.0
+[3.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/2.0.0...3.0.0
+[2.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/1.0.0...2.0.0
+[1.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/releases/tag/1.0.0
