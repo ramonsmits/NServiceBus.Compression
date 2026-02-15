@@ -7,10 +7,11 @@ namespace NServiceBus;
 public static class ConfigureExtensions
 {
     /// <summary>
-    /// Enable compression of message bodies
+    /// Enable compression of message bodies using the specified algorithm
     /// </summary>
     public static void CompressMessageBody(
         this EndpointConfiguration config,
+        CompressionAlgorithm algorithm,
         CompressionLevel compressionLevel,
         int thresholdSize)
     {
@@ -19,10 +20,22 @@ public static class ConfigureExtensions
 
         var properties = new Options
         {
+            Algorithm = algorithm,
             CompressionLevel = compressionLevel,
             ThresholdSize = thresholdSize
         };
         config.GetSettings().Set(properties);
         config.EnableFeature<CompressionFeature>();
+    }
+
+    /// <summary>
+    /// Enable GZip compression of message bodies
+    /// </summary>
+    public static void CompressMessageBody(
+        this EndpointConfiguration config,
+        CompressionLevel compressionLevel,
+        int thresholdSize)
+    {
+        CompressMessageBody(config, CompressionAlgorithm.GZip, compressionLevel, thresholdSize);
     }
 }

@@ -47,12 +47,25 @@ This package is based on the mutator example from the NServiceBus documentation 
 - Drop in auto enable compresssion, no need to recompile! Can be saviour if affected by production incidents due to unable to send too large messages.
 - Requires messages to be of a minimal size but this thresshold is configurable.
 - Compression level can be configured to have more flexibility between CPU cycles and message size.
+- Multiple compression algorithms: GZip, Brotli, Deflate, and ZLib.
 - Uses a header similar as the http specification `Content-Encoding`.
+
+## Supported algorithms
+
+| Algorithm | Content-Encoding | Notes |
+| --------- | ---------------- | ----- |
+| GZip      | `gzip`           | Default. Widely supported, good balance of speed and ratio. |
+| Brotli    | `br`             | Typically better compression ratio than GZip. Uses span-based zero-stream API for reduced allocations. |
+| Deflate   | `deflate`        | Raw deflate compression. |
+| ZLib      | `zlib`           | Deflate with zlib header/checksum. |
+
+Decompression supports all algorithms regardless of the configured compression algorithm, enabling rolling upgrades where endpoints can switch algorithms independently.
 
 ## Configuration
 
 The defaults are:
 
+- Algorithm: GZip
 - Size treshold: 1,000 bytes
 - Compression level: Fastest
 
@@ -62,4 +75,10 @@ The following only compresses messages over 16KB in size and uses the highest co
 
 ```c#
 endpointConfiguration.CompressMessageBody(System.IO.Compression.CompressionLevel.Optimal, 16 * 1024);
+```
+
+To use a specific algorithm:
+
+```c#
+endpointConfiguration.CompressMessageBody(CompressionAlgorithm.Brotli, System.IO.Compression.CompressionLevel.Optimal, 16 * 1024);
 ```

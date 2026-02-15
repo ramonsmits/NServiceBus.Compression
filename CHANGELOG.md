@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+- Add multi-algorithm support: GZip, Brotli, Deflate, ZLib via `CompressionAlgorithm` enum
+- Add `CompressMessageBody` overload accepting `CompressionAlgorithm` parameter
+- Decompression supports all algorithms regardless of configured algorithm (enables rolling upgrades)
+- Reduce allocations: `Write(Span)` instead of `CopyTo`, `TryGetBuffer` instead of `ToArray`, `MemoryMarshal.TryGetArray` for zero-copy decompression input
+- Brotli uses span-based `BrotliEncoder.TryCompress` with `ArrayPool` — zero-stream compression path
+- Remove `CommunityToolkit.HighPerformance` dependency
+
+### Dependencies
+
+- NServiceBus [10.0.0, 11.0.0)
+- MinVer 7.0.0
+
 ## [6.0.0-preview.1] - 2026-02-14
 
 Target: NServiceBus 10.x | .NET 10.0
@@ -60,6 +74,7 @@ Target: NServiceBus 5.x
 
 - Initial release
 
+[Unreleased]: https://github.com/ramonsmits/NServiceBus.Compression/compare/6.0.0-preview.1...HEAD
 [6.0.0-preview.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...6.0.0-preview.1
 [5.0.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/4.0.0...5.0.0

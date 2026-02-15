@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NServiceBus;
 
@@ -15,7 +15,11 @@ class Program
         endpointConfiguration.AuditProcessedMessagesTo("audit");
         endpointConfiguration.EnableInstallers();
 
-        endpointConfiguration.CompressMessageBody(System.IO.Compression.CompressionLevel.Optimal, 1000);
+        // GZip (default when algorithm is not specified)
+        //endpointConfiguration.CompressMessageBody(System.IO.Compression.CompressionLevel.Optimal, 1000);
+
+        // Brotli - typically better compression ratio than GZip
+        endpointConfiguration.CompressMessageBody(CompressionAlgorithm.Brotli, System.IO.Compression.CompressionLevel.Optimal, 1000);
 
         var endpointInstance = await Endpoint.Start(endpointConfiguration);
 

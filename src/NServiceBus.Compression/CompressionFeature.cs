@@ -12,6 +12,7 @@ class CompressionFeature : Feature
     protected override void Setup(FeatureConfigurationContext context)
     {
         if (!context.Settings.TryGet(out Options properties)) properties = new Options();
+        Log.InfoFormat("Algorithm: {0}", properties.Algorithm);
         Log.InfoFormat("Compression level: {0}", properties.CompressionLevel);
         Log.InfoFormat("Threshold: {0:N0} bytes", properties.ThresholdSize);
         context.Services.AddSingleton(properties);
