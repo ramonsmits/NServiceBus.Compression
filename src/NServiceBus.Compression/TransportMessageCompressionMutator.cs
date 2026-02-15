@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Buffers.Binary;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
@@ -52,15 +53,21 @@ class TransportMessageCompressionMutator(Options properties) : IMutateIncomingTr
     ReadOnlyMemory<byte> CompressBrotli(ReadOnlyMemory<byte> input)
     {
         var maxLength = BrotliEncoder.GetMaxCompressedLength(input.Length);
-        var rented = ArrayPool<byte>.Shared.Rent(maxLength);
+        var totalLength = maxLength + sizeof(long);
+        var rented = ArrayPool<byte>.Shared.Rent(totalLength);
         try
         {
-            if (!BrotliEncoder.TryCompress(input.Span, rented, out var bytesWritten, (int)CompressionLevel, 22))
+            var window = Math.Clamp((int)Math.Ceiling(Math.Log2(input.Length)) + 1, 10, 22);
+
+            if (!BrotliEncoder.TryCompress(input.Span, rented, out var bytesWritten, (int)CompressionLevel, window))
             {
                 throw new InvalidOperationException("Brotli compression failed.");
             }
 
-            return rented.AsMemory(0, bytesWritten).ToArray();
+            // Append original size as a trailer for span-based decompression
+            BinaryPrimitives.WriteInt64LittleEndian(rented.AsSpan(bytesWritten), input.Length);
+
+            return rented.AsMemory(0, bytesWritten + sizeof(long)).ToArray();
         }
         finally
         {
@@ -87,19 +94,39 @@ class TransportMessageCompressionMutator(Options properties) : IMutateIncomingTr
         var algorithm = ParseContentEncoding(encoding);
         if (algorithm is null) return Task.CompletedTask;
 
-        using var compressedBodyStream = CreateReadStream(context.Body);
-        using var decompressionStream = CreateDecompressionStream(compressedBodyStream, algorithm.Value);
-        var output = new MemoryStream();
-        decompressionStream.CopyTo(output);
-        context.Body = GetBufferAsMemory(output);
+        if (algorithm == CompressionAlgorithm.Brotli)
+        {
+            context.Body = DecompressBrotli(context.Body);
+        }
+        else
+        {
+            using var compressedBodyStream = CreateReadStream(context.Body);
+            using var decompressionStream = CreateDecompressionStream(compressedBodyStream, algorithm.Value);
+            var output = new MemoryStream();
+            decompressionStream.CopyTo(output);
+            context.Body = GetBufferAsMemory(output);
+        }
 
         return Task.CompletedTask;
+    }
+
+    static ReadOnlyMemory<byte> DecompressBrotli(ReadOnlyMemory<byte> input)
+    {
+        var originalSize = (int)BinaryPrimitives.ReadInt64LittleEndian(input.Span[^sizeof(long)..]);
+        var compressedData = input[..^sizeof(long)];
+        var result = new byte[originalSize];
+
+        if (!BrotliDecoder.TryDecompress(compressedData.Span, result, out var bytesWritten) || bytesWritten != originalSize)
+        {
+            throw new InvalidOperationException("Brotli decompression failed.");
+        }
+
+        return result;
     }
 
     static Stream CreateCompressionStream(Stream output, CompressionAlgorithm algorithm, CompressionLevel level) => algorithm switch
     {
         CompressionAlgorithm.GZip => new GZipStream(output, level, leaveOpen: true),
-        CompressionAlgorithm.Brotli => new BrotliStream(output, level, leaveOpen: true),
         CompressionAlgorithm.Deflate => new DeflateStream(output, level, leaveOpen: true),
         CompressionAlgorithm.ZLib => new ZLibStream(output, level, leaveOpen: true),
         _ => throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, null)
@@ -108,7 +135,6 @@ class TransportMessageCompressionMutator(Options properties) : IMutateIncomingTr
     static Stream CreateDecompressionStream(Stream input, CompressionAlgorithm algorithm) => algorithm switch
     {
         CompressionAlgorithm.GZip => new GZipStream(input, CompressionMode.Decompress),
-        CompressionAlgorithm.Brotli => new BrotliStream(input, CompressionMode.Decompress),
         CompressionAlgorithm.Deflate => new DeflateStream(input, CompressionMode.Decompress),
         CompressionAlgorithm.ZLib => new ZLibStream(input, CompressionMode.Decompress),
         _ => throw new ArgumentOutOfRangeException(nameof(algorithm), algorithm, null)
