@@ -51,6 +51,9 @@ release version="":
     git tag "$version"
     echo "Tagged $version — push with: git push origin $version"
 
+benchmark *args:
+    dotnet run --project src/NServiceBus.Compression.Benchmarks/NServiceBus.Compression.Benchmarks.csproj -c {{config}} -- {{args}}
+
 run *args:
     dotnet run --project {{demo}} -- {{args}}
 
