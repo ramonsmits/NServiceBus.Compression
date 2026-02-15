@@ -1,37 +1,26 @@
 # Changelog
 
-## [6.0.0-preview.2] - 2026-02-15
-
-- Add multi-algorithm support: GZip, Brotli, Deflate, ZLib via `CompressionAlgorithm` enum
-- Add `CompressMessageBody` overload accepting `CompressionAlgorithm` parameter
-- Decompression supports all algorithms regardless of configured algorithm (enables rolling upgrades)
-- Reduce allocations: `Write(Span)` instead of `CopyTo`, `TryGetBuffer` instead of `ToArray`, `MemoryMarshal.TryGetArray` for zero-copy decompression input
-- Brotli uses span-based `BrotliEncoder.TryCompress` with `ArrayPool` — zero-stream compression path
-- Remove `CommunityToolkit.HighPerformance` dependency
-
-### Dependencies
-
-- NServiceBus [10.0.0, 11.0.0)
-- MinVer 7.0.0
-
-## [6.0.0-preview.1] - 2026-02-14
+## [Unreleased]
 
 Target: NServiceBus 10.x | .NET 10.0
 
+### Features
+
 - Support NServiceBus 10.x
-- Target net10.0
-- Remove `EnableByDefault()`, require explicit `EnableFeature` via configuration API
-- Code cleanup: file-scoped namespaces, primary constructors, modern argument validation
-- Remove redundant `Microsoft.SourceLink.GitHub` (built into .NET 8+ SDK)
-- Switch to MinVer for tag-based versioning
-- Add justfile for build, pack, and publish workflows
-- Add GitHub Actions CI workflow
+- Add multi-algorithm support: GZip, Brotli, Deflate, ZLib via `CompressionAlgorithm` enum
+- Decompression supports all algorithms regardless of configured algorithm (enables rolling upgrades)
+- ⚠️ Require explicit opt-in via `CompressMessageBody` configuration API (`EnableByDefault()` removed)
+
+### Improvements
+
+- Brotli uses span-based `BrotliEncoder.TryCompress` / `BrotliDecoder.TryDecompress` with `ArrayPool` — dramatically lower allocations
+- Reduce allocations: span-based `Write`, `TryGetBuffer`, `MemoryMarshal.TryGetArray` for zero-copy streams
 
 ### Dependencies
 
 - NServiceBus [10.0.0, 11.0.0)
-- CommunityToolkit.HighPerformance 8.4.0
-- MinVer 7.0.0
+- Remove `CommunityToolkit.HighPerformance` dependency
+- Switch to MinVer for tag-based versioning
 
 ## [5.0.1] - 2024-06-14
 
@@ -74,8 +63,7 @@ Target: NServiceBus 5.x
 
 - Initial release
 
-[6.0.0-preview.2]: https://github.com/ramonsmits/NServiceBus.Compression/compare/6.0.0-preview.1...6.0.0-preview.2
-[6.0.0-preview.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...6.0.0-preview.1
+[Unreleased]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...HEAD
 [5.0.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/4.0.0...5.0.0
 [4.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/3.0.0...4.0.0
