@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [6.0.0-preview.2] - 2026-02-15
 
 - Add multi-algorithm support: GZip, Brotli, Deflate, ZLib via `CompressionAlgorithm` enum
 - Add `CompressMessageBody` overload accepting `CompressionAlgorithm` parameter
@@ -74,7 +74,7 @@ Target: NServiceBus 5.x
 
 - Initial release
 
-[Unreleased]: https://github.com/ramonsmits/NServiceBus.Compression/compare/6.0.0-preview.1...HEAD
+[6.0.0-preview.2]: https://github.com/ramonsmits/NServiceBus.Compression/compare/6.0.0-preview.1...6.0.0-preview.2
 [6.0.0-preview.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...6.0.0-preview.1
 [5.0.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/4.0.0...5.0.0
