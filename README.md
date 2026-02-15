@@ -52,14 +52,14 @@ This package is based on the mutator example from the NServiceBus documentation 
 
 ## Supported algorithms
 
-| Algorithm | Content-Encoding | Notes |
-| --------- | ---------------- | ----- |
-| GZip      | `gzip`           | Default. Widely supported, good balance of speed and ratio. |
-| Brotli    | `br`             | Typically better compression ratio than GZip. Uses span-based zero-stream API for reduced allocations. |
-| Deflate   | `deflate`        | Raw deflate compression. |
-| ZLib      | `zlib`           | Deflate with zlib header/checksum. |
+| Algorithm | Content-Encoding | Receiver version | Notes |
+| --------- | ---------------- | ---------------- | ----- |
+| GZip      | `gzip`           | Any              | Default. Widely supported, good balance of speed and ratio. |
+| Brotli    | `br`             | 6.x+             | Typically better compression ratio than GZip. Uses span-based zero-stream API for reduced allocations. |
+| Deflate   | `deflate`        | 6.x+             | Raw deflate compression. |
+| ZLib      | `zlib`           | 6.x+             | Deflate with zlib header/checksum. |
 
-Decompression supports all algorithms regardless of the configured compression algorithm, enabling rolling upgrades where endpoints can switch algorithms independently.
+Decompression supports all algorithms regardless of the configured compression algorithm, enabling rolling upgrades where endpoints can switch algorithms independently. When switching to a non-GZip algorithm, ensure all receivers are upgraded to v6.x first. GZip is the only algorithm supported by all versions.
 
 ## Configuration
 

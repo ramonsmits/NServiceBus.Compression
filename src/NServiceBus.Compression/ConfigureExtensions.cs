@@ -7,7 +7,8 @@ namespace NServiceBus;
 public static class ConfigureExtensions
 {
     /// <summary>
-    /// Enable compression of message bodies using the specified algorithm
+    /// Enable compression of message bodies using the specified algorithm.
+    /// Receivers must have a version that supports the chosen algorithm. See <see cref="CompressionAlgorithm"/> for version requirements.
     /// </summary>
     public static void CompressMessageBody(
         this EndpointConfiguration config,
