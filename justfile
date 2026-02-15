@@ -1,4 +1,4 @@
-solution := "src/NServiceBus.Compression.sln"
+solution := "src/NServiceBus.Compression.slnx"
 project  := "src/NServiceBus.Compression/NServiceBus.Compression.csproj"
 demo     := "src/Demo/Demo.csproj"
 config   := "Release"

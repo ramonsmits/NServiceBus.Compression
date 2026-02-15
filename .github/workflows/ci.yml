@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.x'
-      - run: dotnet build src/NServiceBus.Compression.sln -c Release
+      - run: dotnet build src/NServiceBus.Compression.slnx -c Release
 
       - run: dotnet pack src/NServiceBus.Compression/NServiceBus.Compression.csproj -c Release -o artifacts
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
