@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [6.0.0] - 2026-02-15
 
 Target: NServiceBus 10.x | .NET 10.0
 
@@ -63,7 +63,7 @@ Target: NServiceBus 5.x
 
 - Initial release
 
-[Unreleased]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...HEAD
+[6.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.1...6.0.0
 [5.0.1]: https://github.com/ramonsmits/NServiceBus.Compression/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/4.0.0...5.0.0
 [4.0.0]: https://github.com/ramonsmits/NServiceBus.Compression/compare/3.0.0...4.0.0
